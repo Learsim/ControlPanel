@@ -9,6 +9,7 @@ import { Console } from 'console';
 import { createMuiTheme } from '@material-ui/core/styles';
 import {getClients} from './api/Handler'
 import { Client } from './interfaces/Client';
+import {generateArduino} from './helpers/Arduino/Arduino'
 const themes = createMuiTheme({
   palette: {
     primary: {
@@ -89,6 +90,7 @@ justifyContent:"space-between",
 }));
 
 function App() {
+  generateArduino();
   const Cl:Client[] = [];
   let C:Client = {};
   const [Clients, setClients] = useState(Cl);
