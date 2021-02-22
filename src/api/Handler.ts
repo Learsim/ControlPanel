@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { Client } from '../interfaces/Client';
+import { Client,Status } from '../interfaces/Client';
 export function getClients(): Promise<Client[]>{
   
 
@@ -8,4 +8,9 @@ export function getClients(): Promise<Client[]>{
   .then(response => {
       return response.data;
   });
+}
+
+
+export function getStatus(): Promise<Status>{
+  return axios.get<Status>('http://127.0.0.1:8888/api/status').then(response => {return response.data; console.log(response.data)})
 }

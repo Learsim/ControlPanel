@@ -27,6 +27,9 @@ export interface Input {
     
 }
 
+export interface Status {
+    SimConnection:boolean;
+}
 enum ConnectionType {
 
     SERIAL,
