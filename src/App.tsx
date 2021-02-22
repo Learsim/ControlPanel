@@ -9,7 +9,6 @@ import { green, orange, red, yellow } from '@material-ui/core/colors';
 import { createMuiTheme } from '@material-ui/core/styles';
 import { getClients, getStatus } from './api/Handler'
 import { Client } from './interfaces/Client';
-import { generateArduino } from './helpers/Arduino/Arduino'
 
 
 const useStyles = makeStyles((theme) => ({
@@ -77,7 +76,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Contents = () => {
-  generateArduino();
   const Cl: Client[] = [];
   let C: Client = {};
   const [status, setStatus] = useState(false);
