@@ -16,13 +16,28 @@ W.I.P
 ## Development 
 
 #### Clone repo
-```git clone https://github.com/Learsim/ControlPanel.git```
+```bash
+git clone https://github.com/Learsim/ControlPanel.git
+```
 #### Go to directory
-```cd ControlPanel```
+```bash
+cd ControlPanel
+```
 #### Run yarn
-```yarn```
+```bash
+yarn
+```
 #### Run yarn start
-```yarn start```
+```bash
+yarn start
+```
+
+### Usage of fake API
+```bash
+cd src
+pip3 install flask
+python fakeapi.py
+```
 
 
 ## Credits

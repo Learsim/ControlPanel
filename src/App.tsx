@@ -1,14 +1,17 @@
 import React, { useState } from 'react';
+import { dialog, systemPreferences } from 'electron';
+
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-import icon from '../assets/icon.svg';
 import './App.css';
-import { AppBar, Box, Button, Drawer, IconButton, Toolbar, Typography, Grid, makeStyles, Card, CardContent, CardActions, Fab, Tooltip } from '@material-ui/core';
+import { AppBar, Box, Button, Drawer, IconButton, Toolbar, Typography, Grid, makeStyles, Card, CardContent, CardActions, Fab, Tooltip, Snackbar } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
-import { Add, ArrowBackIos, Favorite, Palette, AirplanemodeActive, AirplanemodeInactive } from '@material-ui/icons';
+import { Add, ArrowBackIos, Favorite, Palette, AirplanemodeActive, AirplanemodeInactive, Refresh } from '@material-ui/icons';
 import { green, orange, red, yellow } from '@material-ui/core/colors';
-import { createMuiTheme } from '@material-ui/core/styles';
 import { getClients, getStatus } from './api/Handler'
 import { Client } from './interfaces/Client';
+import {Settings} from './pages/settings';
+import axios from 'axios';
+
 
 
 const useStyles = makeStyles((theme) => ({
@@ -100,7 +103,7 @@ const Contents = () => {
   const classes = useStyles();
   let content;
   let x = Math.random() * 30;
-
+  
   Clients.forEach(element => {
     l.push(
       <Grid item xs={6} style={{ maxWidth: "250px" }}>
@@ -162,6 +165,8 @@ const Contents = () => {
         {SelectedClient.guid}<br></br>
       </div>
     );
+  } else if (View === "Settings"){
+    content = (<Settings></Settings>)
   }
   document.title = View;
 
@@ -183,23 +188,39 @@ const Contents = () => {
                   <ArrowBackIos />
                 </IconButton>)
                 : (<div></div>)}
-              <Tooltip title={status ? "Online" : "Offline"} aria-label="add " placement="top">
-              {status ?(
-                <AirplanemodeActive className="menuButton" style={{color: green[500]} }></AirplanemodeActive>):(
-                <AirplanemodeInactive className="menuButton" style={{color: orange[500]} }></AirplanemodeInactive>)
+              
+              {status ? (
+                <div>
+                <Tooltip title={"Online" } aria-label="add " placement="top">
+                <AirplanemodeActive className="menuButton" style={{color: green[500]} }></AirplanemodeActive>
+                </Tooltip>
+                </div>):(
+                  <div>
+                                    <Tooltip title={"Offline" } aria-label="add " placement="top">
+
+                <AirplanemodeInactive className="menuButton" style={{color: orange[500]} }></AirplanemodeInactive>
+                </Tooltip>
+                <Tooltip title={"Connect" } aria-label="add " placement="top">
+
+                <IconButton edge="start" className="menuButton" color="inherit" aria-label="menu" onClick={() => ReconnectToSimconnect(setStatus)}>
+                  <Refresh />
+                </IconButton>
+                </Tooltip>
+                </div>
+                )
                 }
-              </Tooltip>
             </div>
           </div>
         </Toolbar>
       </AppBar>
-
-
+       
       <Box component="span" m={1} >
         <Drawer anchor="left" open={sideBar} >
           <div className={classes.sideBar}>
             <Button onClick={() => ToggleSideBar(sideBar, setSideBar)}>Close</Button>
             <Button onClick={() => NavigateTo("Clients", setView, setSideBar)}>Back</Button>
+            <Button onClick={() => NavigateTo("Settings", setView, setSideBar)}>Settings</Button>
+
           </div>
         </Drawer>
       </Box>
@@ -211,6 +232,7 @@ const Contents = () => {
 }
 
 export default function App() {
+  
   return (
     <Router>
       <Switch>
@@ -232,11 +254,20 @@ function NavigateTo(view: string, viewstatefunc: any, sidebarstatefunc: any) {
 function NavigateToClient(element: Client, viewstatefunc: any, clientstatefunc: any) {
   clientstatefunc(element);
   viewstatefunc("Client");
+  
+
 }
 function GetStatus(SetStatus: any) {
   getStatus().then(response => {
     SetStatus(response.SimConnection);
 
-  })
+  }).catch((error) => {
+    console.log(error);
+  });
   
 }
+function ReconnectToSimconnect(setstatus:any): void {
+   axios.post<Boolean>('http://127.0.0.1:8888/api/simconnect/connect').then(response => {setstatus(response)}).catch((error)=> console.log(error));
+
+}
+
